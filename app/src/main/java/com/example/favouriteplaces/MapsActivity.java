@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentActivity;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -26,6 +27,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -182,6 +184,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         MainActivity.placeList.add(generateAddress(latLng));
         MainActivity.latLngList.add(latLng);
         MainActivity.arrayAdapter.notifyDataSetChanged(); //THIS WILL UPDATE THE LISTVIEW (IN THE ADAPTER)
+
+
+        //CODE BELOW ADDS DATA TO SHARED PREFERENCES!
+        SharedPreferences sharedPreferences = this.getSharedPreferences("com.example.favouriteplaces", Context.MODE_PRIVATE); //serialize placeList obj into a String to add to SharedPreferences
+        try {
+            sharedPreferences.edit().putString("places", ObjectSerializer.serialize(MainActivity.placeList)).apply();
+
+            //serializing latLngList is tricky since its type is ArrayList<LatLng>, and not ArrayList<String>. So we will firstly split the latLngList into latitudes and longitudes of type ArrayList<String> and then serialize them!
+            ArrayList<String> latitudes = new ArrayList<>();
+            ArrayList<String> longitudes = new ArrayList<>();
+
+            for(LatLng coordinates : MainActivity.latLngList) { //adds a list of String in an ArrayList
+                latitudes.add("" + coordinates.latitude);
+                longitudes.add("" + coordinates.longitude);
+            }
+
+            sharedPreferences.edit().putString("latitudes", ObjectSerializer.serialize(latitudes)).apply(); //we finally serialize the ArrayList<String> 'latitudes' to String! This gets called in onCreate() of MainActivity, deserialized, and displayed!
+            sharedPreferences.edit().putString("longitudes", ObjectSerializer.serialize(longitudes)).apply(); //serialize the ArrayList<String> 'longitudes' to String!  This gets called in onCreate() of MainActivity, deserialized, and displayed!
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 
