@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         longitudes.clear();
 
         try {
+            //ALTHOUGH placeList AND OTHERS ARE CLEARED ABOVE, DATA IS STILL STORED WITHIN SHARED PREFERENCE, SO IF I REOPEN THE APP WITH SAVED DATA, THE CODE BELOW WILL RESTORE THEM BACK INTO placeList BELOW (CHECK IF STATEMENT BELOW)
             //deserializes from String to readable ArrayList<String>!
             placeList = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("places", ObjectSerializer.serialize(new ArrayList<String>())));
             latitudes = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("latitudes", ObjectSerializer.serialize(new ArrayList<String>())));
