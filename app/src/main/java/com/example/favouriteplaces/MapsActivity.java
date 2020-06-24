@@ -188,7 +188,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //CODE BELOW ADDS DATA TO SHARED PREFERENCES!
         SharedPreferences sharedPreferences = this.getSharedPreferences("com.example.favouriteplaces", Context.MODE_PRIVATE); //serialize placeList obj into a String to add to SharedPreferences
-        try {
+        try { //THIS SERIALIZES THE OBJECT WITH ALL THE PLACES DATA THAT WAS ADDED ABOVE - MainActivity.placeList.add(generateAddress(latLng));
             sharedPreferences.edit().putString("places", ObjectSerializer.serialize(MainActivity.placeList)).apply();
 
             //serializing latLngList is tricky since its type is ArrayList<LatLng>, and not ArrayList<String>. So we will firstly split the latLngList into latitudes and longitudes of type ArrayList<String> and then serialize them!
